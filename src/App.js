@@ -6,6 +6,7 @@ import ListMovies from './components/listMovies'
 import ListVehicles from './components/listVehicles'
 import ListSpecies from './components/listSpecies'
 import ListPlanets from './components/listPlanets'
+import axios from 'axios'
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {BrowserRouter, Route} from 'react-router-dom';
@@ -20,7 +21,7 @@ class App extends Component {
       windowWidth : 0,
       windowHeight: 0,
       LeftDrawerOpen : false,
-      routeMargin: 0
+      routeMargin: 0,
     }
   }
 
@@ -36,9 +37,6 @@ class App extends Component {
             if (!mobile) routeMargin = 256;
 
        this.setState({windowWidth: width, windowHeight: height, mobile: mobile, LeftDrawerOpen : !mobile, routeMargin: routeMargin});
-//         console.log(width + ' x ' +height);
-//        if (mobile && this.state.menuOpen)
-//            this.toggleMenu();
     }
 
     componentDidMount() {
@@ -53,12 +51,10 @@ class App extends Component {
       <MuiThemeProvider>
         <BrowserRouter >
           <div>
-            <div>
               <NavBar mobile = {this.state.mobile}
                       onToggleLeftButton ={ () => {this.setState({LeftDrawerOpen: !this.state.LeftDrawerOpen})}}
                       open = {this.state.LeftDrawerOpen}
-              />
-            </div>
+                />
             <div>
               <LeftDrawer mobile = {this.state.mobile}
                           open = {this.state.LeftDrawerOpen}
@@ -67,7 +63,7 @@ class App extends Component {
             </div>
             <div>
                 <div style={{"marginLeft" : this.state.routeMargin}}>
-                  <Route exact path="/people" component={ListPeople} />
+                  <Route path="/people" component={() => <ListPeople mobile = {this.state.mobile}/>} />
                   <Route path="/movies" component={ListMovies} />
                   <Route path="/species" component={ListSpecies} />
                   <Route path="/vehicles" component={ListVehicles} />
@@ -79,6 +75,7 @@ class App extends Component {
       </MuiThemeProvider>
     );
   }
+
 }
 
 export default App;
