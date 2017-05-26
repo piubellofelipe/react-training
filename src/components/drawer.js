@@ -13,10 +13,16 @@ class LeftDrawer extends Component {
       return (
         <div>
           <Drawer open={!this.props.mobile || (this.props.mobile && this.props.open)}  containerStyle={{ marginTop: 64}}>
-            <MenuItem><Link to="/movies">List movies</Link></MenuItem>
-            <MenuItem><Link to="/people">List People</Link></MenuItem>
-            <MenuItem><Link to="/vehicles">List Vehicles</Link></MenuItem>
-            <MenuItem><Link to="/species">List Species</Link></MenuItem>
+            <Link to="/people" style={{ textDecoration: 'none' }} 
+                  onClick = {() => {this.props.onSelectCategory()}}><MenuItem>People</MenuItem></Link>
+            <Link to="/movies" style={{ textDecoration: 'none' }}
+                  onClick = {() => {this.props.onSelectCategory()}}><MenuItem>Movies</MenuItem></Link>
+            <Link to="/vehicles" style={{ textDecoration: 'none' }}
+                  onClick = {() => {this.props.onSelectCategory()}}><MenuItem>Vehicles</MenuItem></Link>
+            <Link to="/species" style={{ textDecoration: 'none' }}
+                  onClick = {() => {this.props.onSelectCategory()}}><MenuItem>Species</MenuItem></Link>
+            <Link to="/planets" style={{ textDecoration: 'none' }}
+                  onClick = {() => {this.props.onSelectCategory()}}><MenuItem>Planets</MenuItem></Link>
           </Drawer>
         </div>
       );

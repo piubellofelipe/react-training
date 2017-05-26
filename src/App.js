@@ -5,6 +5,7 @@ import ListPeople from './components/listPeople'
 import ListMovies from './components/listMovies'
 import ListVehicles from './components/listVehicles'
 import ListSpecies from './components/listSpecies'
+import ListPlanets from './components/listPlanets'
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {BrowserRouter, Route} from 'react-router-dom';
@@ -18,7 +19,8 @@ class App extends Component {
       mobile : false,
       windowWidth : 0,
       windowHeight: 0,
-      LeftDrawerOpen : false
+      LeftDrawerOpen : false,
+      routeMargin: 0
     }
   }
 
@@ -29,9 +31,11 @@ class App extends Component {
             body = d.getElementsByTagName('body')[0],
             width = w.innerWidth || documentElement.clientWidth || body.clientWidth,
             height = w.innerHeight || documentElement.clientHeight || body.clientHeight,
-            mobile = width < 740;
+            mobile = width < 740,
+            routeMargin = 0;
+            if (!mobile) routeMargin = 256;
 
-       this.setState({windowWidth: width, windowHeight: height, mobile: mobile});
+       this.setState({windowWidth: width, windowHeight: height, mobile: mobile, LeftDrawerOpen : !mobile, routeMargin: routeMargin});
 //         console.log(width + ' x ' +height);
 //        if (mobile && this.state.menuOpen)
 //            this.toggleMenu();
@@ -58,14 +62,16 @@ class App extends Component {
             <div>
               <LeftDrawer mobile = {this.state.mobile}
                           open = {this.state.LeftDrawerOpen}
+                          onSelectCategory = {() => {this.setState({LeftDrawerOpen : false})} }
               />
             </div>
             <div>
-                <div>
+                <div style={{"marginLeft" : this.state.routeMargin}}>
                   <Route exact path="/people" component={ListPeople} />
                   <Route path="/movies" component={ListMovies} />
                   <Route path="/species" component={ListSpecies} />
                   <Route path="/vehicles" component={ListVehicles} />
+                  <Route path="/planets" component={ListPlanets} />
                 </div>
             </div>
           </div>
