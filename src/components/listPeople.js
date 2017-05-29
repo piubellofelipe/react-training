@@ -1,11 +1,7 @@
 import React, {Component} from 'react';
 import {List, ListItem} from 'material-ui/List';
-<<<<<<< HEAD
 import {GridList, GridTile} from 'material-ui/GridList';
 import CircularProgress from 'material-ui/CircularProgress';
-=======
-import {GridList, GridTile, Card} from 'material-ui/GridList';
->>>>>>> 00bddd9904b0db1aa4931ff667c93ab08c8be1aa
 import {Link} from 'react-router-dom'
 import ActionInfo from 'material-ui/svg-icons/action/info';
 import Toggle from 'material-ui/Toggle';
@@ -17,12 +13,7 @@ class ListPeople extends Component{
     constructor(props){
         super(props);
         this.state = {
-<<<<<<< HEAD
           listPeople : <CircularProgress />
-=======
-          listPeople : "loading...",
-          mobile : false
->>>>>>> 00bddd9904b0db1aa4931ff667c93ab08c8be1aa
         }
     }
     updateDimensions() {
@@ -64,7 +55,6 @@ class ListPeople extends Component{
             let data = response[0].data.results;
             for (let j=0; j<8; j++)
               data = data.concat(response[j+1].data.results);
-<<<<<<< HEAD
 
             for (let j=0; j<data.length; j++)
               data[j].key = data[j].url.substring(27).slice(0, -1);
@@ -77,29 +67,13 @@ class ListPeople extends Component{
 
                   <ListItem
                   primaryText ={ <Link to={"/people/"+url} style={{ textDecoration: 'none' }}> {person.name} </Link> }
-=======
-            for (let j=0; j<data.length; j++)
-              data[j].key = j+1;
-            let Items = data.map(
-              (person) => {
-                if (!this.state.mobile){
-                  let url = person.url.substring(27);
-                  return (
-                  <Link to={"/people/"+url} style={{ textDecoration: 'none' }} key = {person.key}>
-                  <ListItem
-                  primaryText = {person.name}
->>>>>>> 00bddd9904b0db1aa4931ff667c93ab08c8be1aa
                   secondaryText= {person.gender}
 
                   rightToggle={<Toggle defaultToggled = {this.getfav(person.key)} onToggle={() => this.fav(person.key)} />}
                   /> );
                 }
                 else{
-<<<<<<< HEAD
                   let url = person.url.substring(27).slice(0, -1);
-=======
-                  let url = "/people/"+person.key;
->>>>>>> 00bddd9904b0db1aa4931ff667c93ab08c8be1aa
                   return (
                   <Link to={'/people/' + url} style={{ textDecoration: 'none' }} >
                   <GridTile
