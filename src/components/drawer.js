@@ -4,10 +4,6 @@ import MenuItem from 'material-ui/MenuItem';
 import {Link} from 'react-router-dom'
 
 class LeftDrawer extends Component {
-    constructor(props) {
-      super(props);
-
-    }
 
     render() {
       return (
