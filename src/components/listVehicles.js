@@ -38,6 +38,7 @@ class ListVehicles extends Component{
               data = data.concat(response[j+1].data.results);
             for (let j=0; j<data.length; j++) data[j].key = j+1;
             let Items = data.map(
+<<<<<<< HEAD
             (vehicle) => {
                 if (!this.state.mobile){
                   let url = vehicle.url.substring(29).slice(0, -1);
@@ -56,6 +57,16 @@ class ListVehicles extends Component{
                   /> </Link> );
                 }
               }
+=======
+              (vehicle) => {
+                let url = "/vehicles/"+vehicle.key;
+                return (
+                <Link to={url} style={{ textDecoration: 'none' }} key={vehicle.key} > <ListItem
+                primaryText = {vehicle.name}
+                secondaryText= {vehicle.manufacturer}
+                /> </Link> );}
+
+>>>>>>> 00bddd9904b0db1aa4931ff667c93ab08c8be1aa
               );
               if (!this.state.mobile) this.setState({listVehicles:<List> {Items} </List>});
               else this.setState({listVehicles : <GridList>{Items}</GridList>})

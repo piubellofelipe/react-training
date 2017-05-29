@@ -40,6 +40,7 @@ class ListSpecies extends Component{
             for (let j=0; j<data.length; j++) data[j].key = j;
             let Items = data.map(
               (specie) => {
+<<<<<<< HEAD
                 if (!this.state.mobile){
                   let url = "/species/"+specie.url.substring(28).slice(0, -1);
                   return (
@@ -57,6 +58,15 @@ class ListSpecies extends Component{
                   /> </Link> );
                 }
               }
+=======
+                let url = "/species/"+specie.key;
+                return (
+                <Link to={url} style={{ textDecoration: 'none' }} key={specie.key}> <ListItem
+                primaryText = {specie.name}
+                secondaryText= {specie.language}
+                /> </Link> );}
+
+>>>>>>> 00bddd9904b0db1aa4931ff667c93ab08c8be1aa
               );
               if (!this.state.mobile) this.setState({listSpecies:<List> {Items} </List>});
               else this.setState({listSpecies : <GridList>{Items}</GridList>})

@@ -35,6 +35,7 @@ class ListMovies extends Component{
             for (let j=0; j<data.length; j++) data[j].key = j+1;
             let Items = data.map(
               (movie) => {
+<<<<<<< HEAD
                 if (!this.state.mobile){
                   let url = movie.url.substring(26).slice(0, -1);
                   return (
@@ -60,6 +61,17 @@ class ListMovies extends Component{
             );
             if (!this.state.mobile) this.setState({listMovies:<List> {Items} </List>});
             else this.setState({listMovies : <GridList>{Items}</GridList>})
+=======
+                let url = "/movies/"+movie.key;
+                return (
+                <Link to={url} style={{ textDecoration: 'none' }} key={movie.key}> <ListItem
+                primaryText = {movie.title}
+                secondaryText= {movie.episode_id}
+                /> </Link> );}
+
+              );
+            this.setState({listMovies:<List> {Items} </List>});
+>>>>>>> 00bddd9904b0db1aa4931ff667c93ab08c8be1aa
           }
         ).catch( err => console.log(err));
       }

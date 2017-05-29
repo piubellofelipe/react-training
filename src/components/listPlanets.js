@@ -45,6 +45,7 @@ class ListPlanets extends Component{
             let data = response[0].data.results;
             for (let j=0; j<6; j++)
               data = data.concat(response[j+1].data.results);
+<<<<<<< HEAD
             for (let j=0; j<data.length; j++) data[j].key = data[j].url.substring(28).slice(0, -1);
             let Items = data.map(
               (planet) => {
@@ -66,6 +67,18 @@ class ListPlanets extends Component{
                     /> </Link> );
                   }
                 }
+=======
+            for (let j=0; j<data.length; j++) data[j].key = j+1;
+            let Items = data.map(
+              (planet) => {
+                let url = "/planets/"+planet.key;
+                return (
+                <Link to={url} style={{ textDecoration: 'none' }} key={planet.key}> <ListItem
+                primaryText = {planet.name}
+                secondaryText= {planet.climate}
+                /> </Link> );}
+
+>>>>>>> 00bddd9904b0db1aa4931ff667c93ab08c8be1aa
               );
               if (!this.state.mobile) this.setState({listPlanets:<List> {Items} </List>});
               else this.setState({listPlanets : <GridList>{Items}</GridList>})
