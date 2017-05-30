@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
 import {List, ListItem} from 'material-ui/List';
-import {Link} from 'react-router-dom';
 import {GridList, GridTile} from 'material-ui/GridList';
 import CircularProgress from 'material-ui/CircularProgress';
+import {Link} from 'react-router-dom'
+import StarBorder from 'material-ui/svg-icons/toggle/star-border';
+import IconButton from 'material-ui/IconButton';
 import axios from 'axios';
 
 class ListVehicles extends Component{
@@ -22,6 +24,14 @@ class ListVehicles extends Component{
 
          this.setState({mobile: mobile});
       }
+    fav(e, id){
+      localStorage.setItem(`vehicles/${id}`, !this.getfav(id));
+      let color = this.getfav(id) ? "yellow" : "black";
+      e.target.style=`display: inline-block; color: rgba(0, 0, 0, 0.87); fill: ${color}; height: 24px; width: 24px; user-select: none; transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;`
+    }
+    getfav(id){
+      return localStorage.getItem(`vehicles/${id}`) === "true";
+    }
 
     componentDidMount(){
       window.addEventListener("resize", ()=> {
@@ -36,24 +46,29 @@ class ListVehicles extends Component{
             let data = response[0].data.results;
             for (let j=0; j<3; j++)
               data = data.concat(response[j+1].data.results);
-            for (let j=0; j<data.length; j++) data[j].key = j+1;
+            for (let j=0; j<data.length; j++) data[j].key = data[j].url.substring(29).slice(0, -1);
             let Items = data.map(
             (vehicle) => {
+            var star = <StarBorder color={this.getfav(vehicle.key) ? "yellow" : "black"} onClick = {(e) => {this.fav(e, vehicle.key)}}  />
                 if (!this.state.mobile){
                   let url = vehicle.url.substring(29).slice(0, -1);
                   return (
-                  <Link to={'/vehicles/'+url} style={{ textDecoration: 'none' }} key={vehicle.key} > <ListItem
-                  primaryText = {vehicle.name}
+                  <ListItem
+                  primaryText = {<Link to={'/vehicles/'+url} style={{ textDecoration: 'none' }} key={vehicle.key} >{vehicle.name}</Link>}
                   secondaryText= {vehicle.manufacturer}
-                  /> </Link> );
+                  rightIcon = {<IconButton >{star}</IconButton>}
+
+                  />  );
                 }
                 else{
                   let url = vehicle.url.substring(29).slice(0, -1);
                   return (
-                  <Link to={'/vehicles/'+url} style={{ textDecoration: 'none' }} key={vehicle.key} > <GridTile
-                  title = {vehicle.name}
+                   <GridTile
+                  title = {<Link to={'/vehicles/'+url} style={{ textDecoration: 'none' }} key={vehicle.key} >{vehicle.name}</Link>}
                   subtitle= {vehicle.manufacturer}
-                  /> </Link> );
+                  actionIcon={<IconButton >{star}</IconButton>}
+
+                  />  );
                 }
               }
               );

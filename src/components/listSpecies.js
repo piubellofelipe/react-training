@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
 import {List, ListItem} from 'material-ui/List';
-import {Link} from 'react-router-dom';
 import {GridList, GridTile} from 'material-ui/GridList';
 import CircularProgress from 'material-ui/CircularProgress';
+import {Link} from 'react-router-dom'
+import StarBorder from 'material-ui/svg-icons/toggle/star-border';
+import IconButton from 'material-ui/IconButton';
 import axios from 'axios';
 
 class ListSpecies extends Component{
@@ -22,6 +24,14 @@ class ListSpecies extends Component{
 
          this.setState({mobile: mobile});
       }
+    fav(e, id){
+      localStorage.setItem(`species/${id}`, !this.getfav(id));
+      let color = this.getfav(id) ? "yellow" : "black";
+      e.target.style=`display: inline-block; color: rgba(0, 0, 0, 0.87); fill: ${color}; height: 24px; width: 24px; user-select: none; transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;`
+    }
+    getfav(id){
+      return localStorage.getItem(`species/${id}`) === "true";
+    }
 
     componentDidMount(){
       window.addEventListener("resize", ()=> {
@@ -37,24 +47,27 @@ class ListSpecies extends Component{
             let data = response[0].data.results;
             for (let j=0; j<3; j++)
               data = data.concat(response[j+1].data.results);
-            for (let j=0; j<data.length; j++) data[j].key = j;
+            for (let j=0; j<data.length; j++) data[j].key = data[j].url.substring(28).slice(0, -1);
             let Items = data.map(
               (specie) => {
+            var star = <StarBorder color={this.getfav(specie.key) ? "yellow" : "black"} onClick = {(e) => {this.fav(e, specie.key)}}  />
                 if (!this.state.mobile){
                   let url = "/species/"+specie.url.substring(28).slice(0, -1);
                   return (
-                  <Link to={url} style={{ textDecoration: 'none' }} key={specie.key}> <ListItem
-                  primaryText = {specie.name}
+                  <ListItem
+                  primaryText = {<Link to={url} style={{ textDecoration: 'none' }} key={specie.key}>{specie.name}</Link>}
                   secondaryText= {specie.language}
-                  /> </Link> );
+                  rightIcon = {<IconButton >{star}</IconButton>}
+                  />);
                 }
                 else{
                   let url = "/species/"+specie.url.substring(28).slice(0, -1);
                   return (
-                  <Link to={url} style={{ textDecoration: 'none' }} key={specie.key}> <GridTile
-                  title = {specie.name}
+                 <GridTile
+                  title =  {<Link to={url} style={{ textDecoration: 'none' }} key={specie.key}> {specie.name}</Link> }
                   subtitle= {specie.language}
-                  /> </Link> );
+                  actionIcon={<IconButton >{star}</IconButton>}
+                  /> );
                 }
               }
               );

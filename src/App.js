@@ -11,11 +11,10 @@ import vehicleDetail from './components/vehicleDetails'
 import specieDetail from './components/specieDetails'
 import planetDetail from './components/planetDetails'
 import movieDetail from './components/movieDetails'
+import search from './components/search.js'
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {BrowserRouter, Route} from 'react-router-dom';
-
-
 
 class App extends Component {
   constructor(props){
@@ -26,6 +25,7 @@ class App extends Component {
       windowHeight: 0,
       LeftDrawerOpen : false,
       routeMargin: 0,
+      searchTerm : ""
     }
   }
 
@@ -55,10 +55,11 @@ class App extends Component {
       <MuiThemeProvider>
         <BrowserRouter >
           <div>
-            <div style={{position : 'fixed', width:'100%', marginTop: 0}}>
+            <div style={{position : 'fixed', width:'100%', marginTop: 0, zIndex : 10000}}>
               <NavBar mobile = {this.state.mobile}
                       onToggleLeftButton ={ () => {this.setState({LeftDrawerOpen: !this.state.LeftDrawerOpen})}}
                       open = {this.state.LeftDrawerOpen}
+                      applySearch={(term) => this.setState({searchTerm : term})}
                 />
             </div>
             <div>
@@ -68,17 +69,18 @@ class App extends Component {
               />
             </div>
             <div>
-                <div style={{"marginLeft" : this.state.routeMargin, 'paddingTop' : 64}}>
-                  <Route exact path="/people/" component={ListPeople}/>
-                  <Route exact path="/movies/" component={ListMovies} />
-                  <Route exact path="/species/" component={ListSpecies} />
-                  <Route exact path="/vehicles/" component={ListVehicles} />
-                  <Route exact path="/planets/" component={ListPlanets} />
+                <div style={{"marginLeft" : this.state.routeMargin, 'paddingTop' : "64", 'position' : 'relative'}}>
+                  <Route exact path="/people/" render={(props) => (<ListPeople {...props} mobile = {this.state.mobile}/>)}/>
+                  <Route exact path="/movies/" render={(props) => (<ListMovies/>)} />
+                  <Route exact path="/species/" render={(props) => (<ListSpecies/>)} />
+                  <Route exact path="/vehicles/" render={(props) => (<ListVehicles/>)} />
+                  <Route exact path="/planets/" render={(props) => (<ListPlanets/>)} />
                   <Route path="/people/:id" component={personDetail}/>
                   <Route path="/species/:id" component={specieDetail}/>
                   <Route path="/movies/:id" component={movieDetail}/>
                   <Route path="/vehicles/:id" component={vehicleDetail}/>
                   <Route path="/planets/:id" component={planetDetail}/>
+                  <Route path="/search/:category/:term" component={search} />
                 </div>
             </div>
           </div>
