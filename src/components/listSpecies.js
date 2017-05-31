@@ -11,7 +11,7 @@ class ListSpecies extends Component{
     constructor(props){
         super(props);
         this.state = {
-          listSpecies : <CircularProgress />
+          term : props.term
         }
     }
     updateDimensions() {
@@ -25,10 +25,14 @@ class ListSpecies extends Component{
          this.setState({mobile: mobile});
       }
     fav(e, id){
-      localStorage.setItem(`species/${id}`, !this.getfav(id));
-      let color = this.getfav(id) ? "yellow" : "black";
-      e.target.style=`display: inline-block; color: rgba(0, 0, 0, 0.87); fill: ${color}; height: 24px; width: 24px; user-select: none; transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;`
+      let prev = this.getfav(id);
+      localStorage.setItem(`species/${id}`, !prev);
+      this.setState({nothing : id});
     }
+    getStar(key){
+      return <StarBorder color={this.getfav(key) ? "yellow" : "black"} onClick = {(e) => {this.fav(e, key)}}  />
+    }
+
     getfav(id){
       return localStorage.getItem(`species/${id}`) === "true";
     }
@@ -40,7 +44,7 @@ class ListSpecies extends Component{
       this.updateDimensions();
 
       let promises = [];
-      for (let i=1; i<5; i++){
+      for (let i=1; i<5; i++)
         promises[i-1] = axios.get(`https://swapi.co/api/species/?page=${i}`)
         axios.all(promises).then(response => {
           if (response.length === 4){
@@ -48,38 +52,52 @@ class ListSpecies extends Component{
             for (let j=0; j<3; j++)
               data = data.concat(response[j+1].data.results);
             for (let j=0; j<data.length; j++) data[j].key = data[j].url.substring(28).slice(0, -1);
-            let Items = data.map(
-              (specie) => {
-            var star = <StarBorder color={this.getfav(specie.key) ? "yellow" : "black"} onClick = {(e) => {this.fav(e, specie.key)}}  />
-                if (!this.state.mobile){
-                  let url = "/species/"+specie.url.substring(28).slice(0, -1);
-                  return (
-                  <ListItem
-                  primaryText = {<Link to={url} style={{ textDecoration: 'none' }} key={specie.key}>{specie.name}</Link>}
-                  secondaryText= {specie.language}
-                  rightIcon = {<IconButton >{star}</IconButton>}
-                  />);
-                }
-                else{
-                  let url = "/species/"+specie.url.substring(28).slice(0, -1);
-                  return (
-                 <GridTile
-                  title =  {<Link to={url} style={{ textDecoration: 'none' }} key={specie.key}> {specie.name}</Link> }
-                  subtitle= {specie.language}
-                  actionIcon={<IconButton >{star}</IconButton>}
-                  /> );
-                }
-              }
-              );
-              if (!this.state.mobile) this.setState({listSpecies:<List> {Items} </List>});
-              else this.setState({listSpecies : <GridList>{Items}</GridList>})
+            this.setState({data : data});
           }
-        }).catch( err => console.log(err));
+        });
       }
+
+
+    makeList(){
+      if (!this.state.data) return <CircularProgress />
+      let data = this.state.data.filter(
+        (dat) =>{
+          if ( !this.state.term || dat.name.toUpperCase().match(this.state.term.toUpperCase())){
+              return dat;
+          }
+          return false;
+        }
+      );
+      let Items = data.map(
+        (specie) => {
+            if (!this.state.mobile){
+              let url = "/species/"+specie.url.substring(28).slice(0, -1);
+              return (
+              <ListItem
+              key={specie.key}
+              primaryText = {<Link to={url} style={{ textDecoration: 'none' }} key={specie.key}>{specie.name}</Link>}
+              secondaryText= {specie.language}
+              rightIcon = {<IconButton >{this.getStar()}</IconButton>}
+              />);
+            }
+            else{
+              let url = "/species/"+specie.url.substring(28).slice(0, -1);
+              return (
+            <GridTile
+              key={specie.key}
+              title =  {<Link to={url} style={{ textDecoration: 'none' }} key={specie.key}> {specie.name}</Link> }
+              subtitle= {specie.language}
+              actionIcon={<IconButton >{this.getStar()}</IconButton>}
+              /> );
+            }
+          }
+        );
+        if (!this.state.mobile) return <List> {Items} </List>
+        else return <GridList>{this.getStar()}</GridList>
     }
 
     render(){
-      return (<div>{this.state.listSpecies}</div>);
+      return <div>{this.makeList()}</div>
     }
 }
 

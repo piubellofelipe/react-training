@@ -55,7 +55,7 @@ class App extends Component {
       <MuiThemeProvider>
         <BrowserRouter >
           <div>
-            <div style={{position : 'fixed', width:'100%', marginTop: 0, zIndex : 10000}}>
+            <div style={{position : 'fixed', width:'100%', marginTop: 0, zIndex : 2}}>
               <NavBar mobile = {this.state.mobile}
                       onToggleLeftButton ={ () => {this.setState({LeftDrawerOpen: !this.state.LeftDrawerOpen})}}
                       open = {this.state.LeftDrawerOpen}
@@ -69,7 +69,7 @@ class App extends Component {
               />
             </div>
             <div>
-                <div style={{"marginLeft" : this.state.routeMargin, 'paddingTop' : "64", 'position' : 'relative'}}>
+                <div style={{"marginLeft" : this.state.routeMargin, 'paddingTop' : 64, 'position' : 'relative'}}>
                   <Route exact path="/people/" render={(props) => (<ListPeople {...props} mobile = {this.state.mobile}/>)}/>
                   <Route exact path="/movies/" render={(props) => (<ListMovies/>)} />
                   <Route exact path="/species/" render={(props) => (<ListSpecies/>)} />

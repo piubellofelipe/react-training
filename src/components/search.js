@@ -1,23 +1,47 @@
 import React, {Component} from 'react';
-import ListPeople from './listPeople';
+import ListPeople from './listPeople'
+import ListMovies from './listMovies'
+import ListVehicles from './listVehicles'
+import ListSpecies from './listSpecies'
+import ListPlanets from './listPlanets'
 
 class search extends Component {
     constructor(match){
-    super(match);
+    console.log(match);
+        super(match);
         this.state = {
-          term : "ana"
+          term : match.match.params.term,
+          category : match.match.params.category
         }
     }
 
     componentWillReceiveProps(nextProps){
-      this.setState({term : nextProps.match.params.term, peopleData : <listPeople term={nextProps.match.params.term} />});
+      this.setState({term : nextProps.match.params.term, category : nextProps.match.params.category});
     }
 
+    makeSearch(){
+      if (this.state.category === "people"){
+        return <ListPeople term={this.state.term}/>
+      }
+      if (this.state.category === "movies"){
+        return <ListMovies term={this.state.term}/>
+      }
+      if (this.state.category === "vehicles"){
+        return <ListVehicles term={this.state.term}/>
+      }
+      if (this.state.category === "species"){
+        return <ListSpecies term={this.state.term}/>
+      }
+      if (this.state.category === "planets"){
+        return <ListPlanets term={this.state.term}/>
+      }
+
+    }
 
 
   render(){
     return (
-        <div><ListPeople term={this.state.term}/></div>
+      <div>{this.makeSearch()}</div>
     );
   }
 }

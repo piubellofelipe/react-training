@@ -4,7 +4,6 @@ import CircularProgress from 'material-ui/CircularProgress';
 import {ListItem} from 'material-ui/List';
 import axios from 'axios';
 
-
 class personDetail extends Component{
     constructor(match){
     super(match);
@@ -21,11 +20,41 @@ class personDetail extends Component{
     favorUnfavor(){
            let fav = this.state.favorite;
            this.setState({favorite : !fav});
-           localStorage.setItem(`people/${this.state.params}`, !fav);
+           localStorage.setItem(`people/fav/${this.state.params}`, !fav);
     }
+
+    convertImgToDataURLviaCanvas(url, callback, outputFormat) {
+      console.log("converting...");
+      var img = new Image();
+      img.crossOrigin = 'Anonymous';
+      img.onload = function() {
+        var canvas = document.createElement('CANVAS');
+        var ctx = canvas.getContext('2d');
+        var dataURL;
+        canvas.height = this.height/4;
+        canvas.width = this.width/4;
+        ctx.drawImage(this, 0, 0);
+        dataURL = canvas.toDataURL(outputFormat);
+        callback(dataURL);
+        canvas = null;
+      };
+      img.src = url;
+    }
+
+    getPhoto(search_term){
+      if (!localStorage.getItem(`people/photos/${this.state.params}`))
+      axios.get(`https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=0b88ee8c4407b8f62c108a465a9a243d&tags=${search_term}&format=json&nojsoncallback=1&extras=url_o`).then((response) => {
+          this.convertImgToDataURLviaCanvas(response.data.photos.photo[0].url_o, (data) => {localStorage.setItem(`people/photos/${this.state.params}`, data )});
+        })
+        .catch((err) => {
+        console.log(err)
+      });
+    }
+
 
     componentDidMount(){
       axios.get(`http://swapi.co/api/people/${this.state.params}/`).then((response) => {
+        this.getPhoto(response.data.name);
         let personInfo = <ListItem> {response.data.name}, {response.data.height}, {response.data.hair_color} </ListItem>
         this.setState({personInfo});
 

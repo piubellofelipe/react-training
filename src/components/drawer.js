@@ -8,7 +8,7 @@ class LeftDrawer extends Component {
     render() {
       return (
         <div>
-          <Drawer open={!this.props.mobile || (this.props.mobile && this.props.open)}  containerStyle={{ marginTop: 64}}>
+          <Drawer open={!this.props.mobile || (this.props.mobile && this.props.open)}  containerStyle={{ marginTop: 68}}>
             <Link to="/people" style={{ textDecoration: 'none' }} 
                   onClick = {() => {this.props.onSelectCategory()}}><MenuItem>People</MenuItem></Link>
             <Link to="/movies" style={{ textDecoration: 'none' }}

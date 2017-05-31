@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "axios": "^0.16.1",
+    "flickr": "^1.1.0",
+    "flickrapi": "^0.6.0",
     "material-ui": "^0.18.1",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",

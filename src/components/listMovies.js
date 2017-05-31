@@ -11,9 +11,10 @@ class ListMovies extends Component{
     constructor(props){
         super(props);
         this.state = {
-          listMovies : <CircularProgress />
+          term : props.term
         }
     }
+
     updateDimensions() {
           let w = window,
               d = document,
@@ -25,12 +26,20 @@ class ListMovies extends Component{
          this.setState({mobile: mobile});
       }
     fav(e, id){
-      localStorage.setItem(`movie/${id}`, !this.getfav(id));
-      let color = this.getfav(id) ? "yellow" : "black";
-      e.target.style=`display: inline-block; color: rgba(0, 0, 0, 0.87); fill: ${color}; height: 24px; width: 24px; user-select: none; transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;`
+      let prev = this.getfav(id);
+      localStorage.setItem(`movie/${id}`, !prev);
+      this.setState({nothing : id});
+    }
+    getStar(key){
+      return <StarBorder color={this.getfav(key) ? "yellow" : "black"} onClick = {(e) => {this.fav(e, key)}}  />
     }
     getfav(id){
       return localStorage.getItem(`movie/${id}`) === "true";
+    }
+
+
+    componentWillReceiveProps(nextProps){
+      this.setState({term : nextProps.term});
     }
 
     componentDidMount(){
@@ -41,41 +50,57 @@ class ListMovies extends Component{
         axios.get(`https://swapi.co/api/films/`).then(response => {
             let data = response.data.results;
             for (let j=0; j<data.length; j++) data[j].key = data[j].url.substring(26).slice(0, -1);
-            let Items = data.map(
-              (movie) => {
-            var star = <StarBorder color={this.getfav(movie.key) ? "yellow" : "black"} onClick = {(e) => {this.fav(e, movie.key)}}  />
-                if (!this.state.mobile){
-                  let url = movie.url.substring(26).slice(0, -1);
-                  return (
-                  
-                    <ListItem
-                    primaryText = {<Link to={'/movies/' + url} style={{ textDecoration: 'none' }} key={movie.key}> {movie.title}</Link>}
-                    secondaryText= {movie.episode_id}
-                  rightIcon = {<IconButton >{star}</IconButton>}
-                    />
-                   );
-                }
-                else{
-                  let url = movie.url.substring(26).slice(0, -1);
-                  return (
-                  
-                  <GridTile
-                  title = {<Link to={'/movies/' + url} style={{ textDecoration: 'none' }} key={movie.key}>{movie.title}</Link>}
-                  subtitle= {movie.episode_id}
-                  actionIcon={<IconButton >{star}</IconButton>}
-                  />  );
-                  }
-                }
-            );
-            if (!this.state.mobile) this.setState({listMovies:<List> {Items} </List>});
-            else this.setState({listMovies : <GridList>{Items}</GridList>})
+            this.setState({data : data});
+      });
+    }
+
+    makeList(){
+      if (!this.state.data) return  <CircularProgress />
+      let data = this.state.data.filter(
+            (dat) =>{
+              if ( !this.state.term || dat.title.toUpperCase().match(this.state.term.toUpperCase())){
+                  return dat;
+              }
+              return false;
+            }
+          );
+
+      let Items = data.map(
+        (movie) => {
+      var star = <StarBorder color={this.getfav(movie.key) ? "yellow" : "black"} onClick = {(e) => {this.fav(e, movie.key)}}  />
+          if (!this.state.mobile){
+            let url = movie.url.substring(26).slice(0, -1);
+            return (
+
+              <ListItem
+              key={movie.key}
+              primaryText = {<Link to={'/movies/' + url} style={{ textDecoration: 'none' }} key={movie.key}> {movie.title}</Link>}
+              secondaryText= {movie.episode_id}
+            rightIcon = {<IconButton >{star}</IconButton>}
+              />
+              );
           }
-        ).catch( err => console.log(err));
-      }
+          else{
+            let url = movie.url.substring(26).slice(0, -1);
+            return (
+
+            <GridTile
+            key={movie.key}
+            title = {<Link to={'/movies/' + url} style={{ textDecoration: 'none' }} key={movie.key}>{movie.title}</Link>}
+            subtitle= {movie.episode_id}
+            actionIcon={<IconButton >{star}</IconButton>}
+            />  );
+            }
+          }
+      );
+      if (!this.state.mobile) return <List> {Items} </List>;
+      return <GridList>{Items}</GridList>;
+}
+
 
 
     render(){
-      return (<div>{this.state.listMovies}</div>);
+      return (<div>{this.makeList()}</div>);
     }
 }
 
